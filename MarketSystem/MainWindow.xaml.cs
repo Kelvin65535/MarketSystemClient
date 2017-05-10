@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MarketSystem
 {
@@ -47,6 +37,8 @@ namespace MarketSystem
         {
             label搁置订单.Content = 0;
             搁置订单列表 = new ObservableCollection<ObservableCollection<ShopItem>>();
+
+            InputMethod.Current.ImeState = InputMethodState.Off;
         }
 
         /// <summary>
@@ -113,7 +105,8 @@ namespace MarketSystem
             {
                 合计价格 += (item.ItemCount * item.ItemSellPrice);
             }
-            label合计价格.Content = 合计价格.ToString();
+            //将合计价格显示为x.xx形式
+            label合计价格.Content = 合计价格.ToString("C");
         }
         
         /// <summary>
@@ -151,6 +144,9 @@ namespace MarketSystem
                     }
                     listviewShopItem.SelectedIndex = 0;
                     Keyboard.Focus(listviewShopItem);
+                    focusItemFromIndex(listviewShopItem.SelectedIndex);
+                    //ListViewItem item = listviewShopItem.ItemContainerGenerator.ContainerFromIndex(listviewShopItem.SelectedIndex) as ListViewItem;
+                    //item.Focus();
                     break;
                 //c键输入，清除商品列表
                 case Key.C:
@@ -183,10 +179,11 @@ namespace MarketSystem
             搁置订单数++;
             label搁置订单.Content = 搁置订单数;
             itemList.Clear();
+            更新合计价格();
         }
 
         /// <summary>
-        /// 还原搁置订单到搁置列表中
+        /// 从搁置列表中还原最后一次的搁置订单
         /// </summary>
         private void 还原搁置订单()
         {
@@ -204,9 +201,14 @@ namespace MarketSystem
             搁置订单列表.RemoveAt(搁置订单数 - 1);
             搁置订单数--;
             label搁置订单.Content = 搁置订单数;
+            更新合计价格();
         }
         
-
+        /// <summary>
+        /// 监听listview的按键事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listviewShopItem_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             //当检测到按下数字键时自动切换回输入编号窗口
@@ -214,22 +216,98 @@ namespace MarketSystem
             {
                 Keyboard.Focus(tb商品编号);
             }
-
-            if (e.Key == Key.Left)
-            {
-
-            }
-        }
-
-        private void ListViewItem_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
+            
             switch (e.Key)
             {
+                //当按下方向键左时减少当前选定的商品数量
                 case Key.Left:
-                    MessageBox.Show("test");
+                    商品数量改变("sub");
+                    break;
+                //当按下方向键右时增加当前选定的商品数量
+                case Key.Right:
+                    商品数量改变("add");
                     break;
                 default:
                     break;
+            }
+        }
+        
+        /// <summary>
+        /// 通过设定“增加”或“减少”模式手动改变商品列表内当前选定的商品数量
+        /// </summary>
+        /// <param name="mode">当mode="add"时增加当前选定商品数量，mode="sub"减少商品数量</param>
+        private void 商品数量改变(string mode)
+        {
+            ShopItem item = (ShopItem)listviewShopItem.SelectedItem;
+            if (item == null)
+            {
+                return;
+            }
+
+            if (mode == "add")
+            {
+                item.ItemCount++;
+            }
+            else if (mode == "sub")
+            {
+                int index = listviewShopItem.SelectedIndex;
+                if (item.ItemCount == 1)
+                {
+                    itemList.Remove(item);
+                } else
+                {
+                    item.ItemCount--;
+                }
+                focusItemFromIndex(index);
+            }
+            else
+            {
+                // Do nothing.
+            }
+
+            //更新数量信息后更新价格标签显示
+            更新合计价格();
+        }
+
+        /// <summary>
+        /// 当商品列表的选定项发生变化时执行以下方法
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listviewShopItem_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int index = listviewShopItem.SelectedIndex;
+            //若当前未选中任何项则设置选中的项
+            if (listviewShopItem.Items.Count == 0)
+            {
+                //当列表为空时跳转回编号输入框
+                Keyboard.Focus(tb商品编号);
+            } 
+        }
+
+        /// <summary>
+        /// 根据指定的index，将焦点移至listview在该索引处的item
+        /// </summary>
+        /// <param name="index"></param>
+        private void focusItemFromIndex(int index)
+        {
+            if (index >= 0)
+            {
+                ListViewItem item = listviewShopItem.ItemContainerGenerator.ContainerFromIndex(index) as ListViewItem;
+                if (item == null)
+                {
+                    if (listviewShopItem.Items.Count == 0)
+                    {
+                        //当列表为空时跳转回编号输入框
+                        Keyboard.Focus(tb商品编号);
+                        return;
+                    } else
+                    {
+                        //选中最后一个元素
+                        item = listviewShopItem.ItemContainerGenerator.ContainerFromIndex(listviewShopItem.Items.Count - 1) as ListViewItem;
+                    }
+                }
+                item.Focus();
             }
         }
     }

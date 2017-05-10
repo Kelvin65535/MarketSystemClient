@@ -24,7 +24,7 @@
         <Label Content="退还" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
         <Label x:Name="label实收价格" Content="0.00" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,10,10.667" Grid.Row="2" VerticalAlignment="Bottom" Foreground="Blue" FontSize="36" FontWeight="Bold"/>
         <Label x:Name="label退还价格" Content="0.00" Grid.Column="2" Margin="0,0,10.667,10.667" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="Red" FontSize="36" FontWeight="Bold"/>
-        <ListView x:Name="listviewShopItem" HorizontalAlignment="Left" Margin="10,10,0,0" Width="498" Grid.ColumnSpan="3" Grid.RowSpan="2" VerticalAlignment="Top" PreviewKeyDown="listviewShopItem_PreviewKeyDown" InputMethod.IsInputMethodEnabled="False">
+        <ListView x:Name="listviewShopItem" HorizontalAlignment="Left" Margin="10,10,0,0" Width="498" Grid.ColumnSpan="3" Grid.RowSpan="2" VerticalAlignment="Top" PreviewKeyDown="listviewShopItem_PreviewKeyDown" InputMethod.IsInputMethodEnabled="False" SelectionChanged="listviewShopItem_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="编号" DisplayMemberBinding="{Binding Path=ItemNum}"></GridViewColumn>
