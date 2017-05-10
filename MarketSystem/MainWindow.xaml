@@ -6,46 +6,42 @@
         xmlns:local="clr-namespace:MarketSystem"
         mc:Ignorable="d"
         Title="主界面" WindowState="Maximized" Loaded="Window_Loaded" Height="480" Width="640">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="3*"/>
+    <Viewbox Stretch="Fill">
+        <Grid Width="640" Height="440">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="1.5*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="合计" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.Row="2"/>
+            <Label x:Name="label合计价格" Content="0.00" Margin="0,0,9.667,9.667" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="36" FontWeight="Bold" Foreground="Blue"/>
+            <Label Content="实收" Grid.Column="1" HorizontalAlignment="Left" Margin="10.333,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
+            <Label Content="退还" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
+            <Label x:Name="label实收价格" Content="0.00" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,10,10.667" Grid.Row="2" VerticalAlignment="Bottom" Foreground="Blue" FontSize="36" FontWeight="Bold"/>
+            <Label x:Name="label退还价格" Content="0.00" Grid.Column="2" Margin="0,0,10.667,10.667" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="Red" FontSize="36" FontWeight="Bold"/>
+            <ListView x:Name="listviewShopItem" Margin="10,10,11,0" Grid.ColumnSpan="3" VerticalAlignment="Top" PreviewKeyDown="listviewShopItem_PreviewKeyDown" InputMethod.IsInputMethodEnabled="False" SelectionChanged="listviewShopItem_SelectionChanged" Height="244" Width="610" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="编号" DisplayMemberBinding="{Binding Path=ItemNum}" Width="150"></GridViewColumn>
+                        <GridViewColumn Header="商品名称" DisplayMemberBinding="{Binding Path=ItemName}" Width="300"></GridViewColumn>
+                        <GridViewColumn Header="数量" DisplayMemberBinding="{Binding Path=ItemCount}" Width="50"></GridViewColumn>
+                        <GridViewColumn Header="原价" DisplayMemberBinding="{Binding Path=ItemOriginalPrice}" Width="50"></GridViewColumn>
+                        <GridViewColumn Header="折后价" DisplayMemberBinding="{Binding Path=ItemSellPrice}" Width="60"></GridViewColumn>
 
-            <RowDefinition Height="0.5*"/>
-            <RowDefinition Height="1.5*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Label Content="合计" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.Row="2"/>
-        <Label x:Name="label合计价格" Content="0.00" Margin="0,0,9.667,9.667" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="36" FontWeight="Bold" Foreground="Blue"/>
-        <Label Content="实收" Grid.Column="1" HorizontalAlignment="Left" Margin="10.333,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-        <Label Content="退还" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-        <Label x:Name="label实收价格" Content="0.00" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,10,10.667" Grid.Row="2" VerticalAlignment="Bottom" Foreground="Blue" FontSize="36" FontWeight="Bold"/>
-        <Label x:Name="label退还价格" Content="0.00" Grid.Column="2" Margin="0,0,10.667,10.667" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="Red" FontSize="36" FontWeight="Bold"/>
-        <ListView x:Name="listviewShopItem" HorizontalAlignment="Left" Margin="10,10,0,0" Width="498" Grid.ColumnSpan="3" Grid.RowSpan="2" VerticalAlignment="Top" PreviewKeyDown="listviewShopItem_PreviewKeyDown" InputMethod.IsInputMethodEnabled="False" SelectionChanged="listviewShopItem_SelectionChanged">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="编号" DisplayMemberBinding="{Binding Path=ItemNum}"></GridViewColumn>
-                    <GridViewColumn Header="商品名称" DisplayMemberBinding="{Binding Path=ItemName}"></GridViewColumn>
-                    <GridViewColumn Header="数量" DisplayMemberBinding="{Binding Path=ItemCount}"></GridViewColumn>
-                    <GridViewColumn Header="原价" DisplayMemberBinding="{Binding Path=ItemOriginalPrice}"></GridViewColumn>
-                    <GridViewColumn Header="折后价" DisplayMemberBinding="{Binding Path=ItemSellPrice}"></GridViewColumn>
-                    <GridViewColumn Header="操作">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="删除" CommandParameter="{Binding Path=ItemNum}"></Button>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Label Content="商品编号" HorizontalAlignment="Left" Margin="10,0.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-        <Label Content="商品名称" HorizontalAlignment="Left" Margin="31.333,0.333,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox x:Name="tb商品编号" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="23" Margin="68,4.333,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="1" KeyUp="tb商品编号_KeyUp" PreviewKeyUp="tb商品编号_PreviewKeyUp" InputMethod.IsInputMethodEnabled="False"/>
-        <Label Content="已搁置的订单：" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-        <Label x:Name="label搁置订单" Content="Label" Grid.Column="2" HorizontalAlignment="Left" Margin="104,1.333,0,0" VerticalAlignment="Top" Grid.Row="1"/>
-    </Grid>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Label Content="商品编号" HorizontalAlignment="Left" Margin="10,0.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+            <Label Content="商品名称" HorizontalAlignment="Left" Margin="31.333,0.333,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
+            <TextBox x:Name="tb商品编号" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="23" Margin="68,4.333,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="1" KeyUp="tb商品编号_KeyUp" PreviewKeyUp="tb商品编号_PreviewKeyUp" InputMethod.IsInputMethodEnabled="False"/>
+            <Label Content="已搁置的订单：" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+            <Label x:Name="label搁置订单" Content="Label" Grid.Column="2" HorizontalAlignment="Left" Margin="104,1.333,0,0" VerticalAlignment="Top" Grid.Row="1"/>
+        </Grid>
+    </Viewbox>
+
 </Window>

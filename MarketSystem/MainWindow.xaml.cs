@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace MarketSystem
 {
@@ -37,7 +38,7 @@ namespace MarketSystem
         {
             label搁置订单.Content = 0;
             搁置订单列表 = new ObservableCollection<ObservableCollection<ShopItem>>();
-
+            label合计价格.Content = (0.00).ToString("C");
             InputMethod.Current.ImeState = InputMethodState.Off;
         }
 
@@ -53,6 +54,7 @@ namespace MarketSystem
 
         private void tb商品编号_KeyUp(object sender, KeyEventArgs e)
         {
+            
             if (e.Key == Key.Enter)
             {
                 //获取输入的商品编号
@@ -67,6 +69,9 @@ namespace MarketSystem
                     if (item.ItemNum == num)
                     {
                         item.ItemCount++;
+                        //从后台将显示焦点移动到刚修改的元素
+                        listviewShopItem.SelectedItem = item;
+                        focusItemInBackground(item);
                         更新合计价格();
                         //清除输入
                         tb商品编号.Text = null;
@@ -76,6 +81,9 @@ namespace MarketSystem
                 //为itemList添加新的商品item
                 //TODO 使用ajax获取商品信息
                 itemList.Add(new ShopItem(num, "测试商品", 1, 1.00, 5.00));
+
+                //调用委托，从后台将显示焦点移动到最后一个元素
+                focusItemInBackground((ShopItem)listviewShopItem.Items[listviewShopItem.Items.Count - 1]);
                 更新合计价格();
                 //清除输入
                 tb商品编号.Text = null;
@@ -110,7 +118,7 @@ namespace MarketSystem
         }
         
         /// <summary>
-        /// 检测输入到商品编号中指定的热键并执行功能
+        /// 监听商品编号输入框的按键事件，检测输入到商品编号中指定的热键并执行功能
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -145,8 +153,6 @@ namespace MarketSystem
                     listviewShopItem.SelectedIndex = 0;
                     Keyboard.Focus(listviewShopItem);
                     focusItemFromIndex(listviewShopItem.SelectedIndex);
-                    //ListViewItem item = listviewShopItem.ItemContainerGenerator.ContainerFromIndex(listviewShopItem.SelectedIndex) as ListViewItem;
-                    //item.Focus();
                     break;
                 //c键输入，清除商品列表
                 case Key.C:
@@ -219,6 +225,18 @@ namespace MarketSystem
             
             switch (e.Key)
             {
+                //当检测到s键输入时将当前订单搁置
+                case Key.S:
+                    新增搁置订单();
+                    tb商品编号.Text = null;
+                    e.Handled = true;
+                    break;
+                //当检测到r键输入时将当前搁置订单还原
+                case Key.R:
+                    还原搁置订单();
+                    tb商品编号.Text = null;
+                    e.Handled = true;
+                    break;
                 //当按下方向键左时减少当前选定的商品数量
                 case Key.Left:
                     商品数量改变("sub");
@@ -282,7 +300,8 @@ namespace MarketSystem
             {
                 //当列表为空时跳转回编号输入框
                 Keyboard.Focus(tb商品编号);
-            } 
+            }
+            listviewShopItem.ScrollIntoView(listviewShopItem.Items.IndexOf(index));
         }
 
         /// <summary>
@@ -309,6 +328,22 @@ namespace MarketSystem
                 }
                 item.Focus();
             }
+        }
+
+        /// <summary>
+        /// 新建线程将当前焦点移动到listview与指定的item相匹配的item
+        /// </summary>
+        /// <param name="item"></param>
+        private void focusItemInBackground(ShopItem item)
+        {
+            FocusSelectedItemDelegate focusDelegate = new FocusSelectedItemDelegate(focusSelectedItemInBackground);
+            listviewShopItem.Dispatcher.BeginInvoke(focusDelegate, DispatcherPriority.Background, item);
+        }
+        delegate void FocusSelectedItemDelegate(ShopItem item);
+        private void focusSelectedItemInBackground(ShopItem item)
+        {
+            listviewShopItem.SelectedItem = item;
+            listviewShopItem.ScrollIntoView(item);
         }
     }
 }
