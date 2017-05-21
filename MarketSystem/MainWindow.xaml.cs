@@ -1,8 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 
 namespace MarketSystem
@@ -39,6 +41,7 @@ namespace MarketSystem
             label搁置订单.Content = 0;
             搁置订单列表 = new ObservableCollection<ObservableCollection<ShopItem>>();
             label合计价格.Content = (0.00).ToString("C");
+            //关闭ime输入法
             InputMethod.Current.ImeState = InputMethodState.Off;
         }
 
@@ -161,6 +164,10 @@ namespace MarketSystem
                     break;
                 //退格按钮
                 case Key.Back:
+                    break;
+                //空格按钮，确认订单
+                case Key.Space:
+                    confirmOrder();
                     break;
                 //其他按钮无视操作
                 default:
@@ -344,6 +351,16 @@ namespace MarketSystem
         {
             listviewShopItem.SelectedItem = item;
             listviewShopItem.ScrollIntoView(item);
+        }
+
+        /// <summary>
+        /// 确认订单
+        /// </summary>
+        private void confirmOrder()
+        {
+            WindowConfirmOrder window = new WindowConfirmOrder();
+            window.DataContext = itemList.ToArray();
+            window.ShowDialog();
         }
     }
 }

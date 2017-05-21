@@ -9,22 +9,17 @@
     <Viewbox Stretch="Fill">
         <Grid Width="640" Height="440">
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*"/>
-                <RowDefinition/>
-                <RowDefinition Height="1.2*"/>
+                <RowDefinition Height="127*"/>
+                <RowDefinition Height="93*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Content="合计" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.Row="2" FontSize="16"/>
-            <Label x:Name="label合计价格" Content="0.00" Margin="0,0,9.667,9.667" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="36" FontWeight="Bold" Foreground="Blue"/>
-            <Label Content="实收" Grid.Column="1" HorizontalAlignment="Left" Margin="10.333,10,0,0" Grid.Row="2" VerticalAlignment="Top" FontSize="16"/>
-            <Label Content="退还" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" FontSize="16"/>
-            <Label x:Name="label实收价格" Content="0.00" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,10,10.667" Grid.Row="2" VerticalAlignment="Bottom" Foreground="Blue" FontSize="36" FontWeight="Bold"/>
-            <Label x:Name="label退还价格" Content="0.00" Grid.Column="2" Margin="0,0,10.667,10.667" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="Red" FontSize="36" FontWeight="Bold"/>
-            <ListView x:Name="listviewShopItem" Margin="10,10,11,0" Grid.ColumnSpan="3" VerticalAlignment="Top" PreviewKeyDown="listviewShopItem_PreviewKeyDown" InputMethod.IsInputMethodEnabled="False" SelectionChanged="listviewShopItem_SelectionChanged" Height="244" Width="610" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            <Label Content="合计" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" Grid.Row="1" FontSize="16" Height="30" Width="42"/>
+            <Label x:Name="label合计价格" Content="0.00" Margin="0,0,10.333,11" Grid.Row="1" VerticalAlignment="Bottom" FontSize="36" FontWeight="Bold" Foreground="Blue" HorizontalContentAlignment="Right" HorizontalAlignment="Right"/>
+            <ListView x:Name="listviewShopItem" Margin="14,10,16,0" Grid.ColumnSpan="3" VerticalAlignment="Top" PreviewKeyDown="listviewShopItem_PreviewKeyDown" InputMethod.IsInputMethodEnabled="False" SelectionChanged="listviewShopItem_SelectionChanged" Height="244" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" FontSize="16">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="编号" DisplayMemberBinding="{Binding Path=ItemNum}" Width="150"></GridViewColumn>
@@ -36,11 +31,29 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <Label Content="商品编号" HorizontalAlignment="Left" Margin="10,0.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-            <Label Content="商品名称" HorizontalAlignment="Left" Margin="9.667,0,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
-            <TextBox x:Name="tb商品编号" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="23" Margin="68,4.333,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="1" KeyUp="tb商品编号_KeyUp" PreviewKeyUp="tb商品编号_PreviewKeyUp" InputMethod.IsInputMethodEnabled="False"/>
-            <Label Content="已搁置的订单：" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-            <Label x:Name="label搁置订单" Content="Label" Grid.Column="2" HorizontalAlignment="Left" Margin="104,1.333,0,0" VerticalAlignment="Top" Grid.Row="1"/>
+            <Label Content="商品编号" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="58"/>
+            <TextBox x:Name="tb商品编号" HorizontalAlignment="Left" Height="23" Margin="68,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="1" KeyUp="tb商品编号_KeyUp" PreviewKeyUp="tb商品编号_PreviewKeyUp" InputMethod.IsInputMethodEnabled="False"/>
+            <Label Content="已搁置的订单：" Grid.Column="2" HorizontalAlignment="Left" Margin="10.667,150,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="94"/>
+            <Label x:Name="label搁置订单" Content="Label" Grid.Column="2" HorizontalAlignment="Left" Margin="94.667,151,0,0" VerticalAlignment="Top" Grid.Row="1" Height="25" Width="41"/>
+
+            <WrapPanel DataContext="{Binding ElementName=listviewShopItem, Path=SelectedItem}" Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="0.667,0,8.333,0" >
+                <StackPanel Orientation="Horizontal" Margin="0,0,0.333,0">
+                    <Label Content="商品名称" FontSize="16"/>
+                    <Label x:Name="label商品名称" Content="{Binding ItemName}" FontSize="16"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0.333,0" >
+                    <Label Content="商品数量"  HorizontalAlignment="Left" FontSize="16"/>
+                    <Label x:Name="label商品数量" Content="{Binding ItemCount}" FontSize="16"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0.333,0">
+                    <Label Content="商品原价" FontSize="16"/>
+                    <Label x:Name="label商品原价" Content="{Binding ItemOriginalPrice}" FontSize="16"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0.333,0">
+                    <Label Content="商品折后价" FontSize="16"/>
+                    <Label x:Name="label商品折后价" Content="{Binding ItemSellPrice}" FontSize="16"/>
+                </StackPanel>
+            </WrapPanel>
         </Grid>
     </Viewbox>
 
