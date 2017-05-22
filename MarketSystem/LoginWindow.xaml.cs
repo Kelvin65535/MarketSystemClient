@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Newtonsoft.Json.Linq;
+using System;
+using Newtonsoft.Json;
 
 namespace MarketSystem.Properties
 {
@@ -56,6 +47,27 @@ namespace MarketSystem.Properties
         private bool checkAuth(ref string username_input, ref string password_input)
         {
             // TODO 增加验证处理部分
+
+            //构造json查询字符串
+            int id = (int)Application.Current.Properties["id"];
+            JObject obj = new JObject();
+            JObject queryObj = new JObject();
+            queryObj.Add("password", password_input);
+            queryObj.Add("username", username_input);
+            obj.Add("id", id);
+            obj.Add("query", queryObj);
+            obj.Add("quest", "login");
+            obj.Add("userid", "");
+            string json = JsonConvert.SerializeObject(obj);
+            string ret = "";
+
+            //发送数据
+            //TODO 增加ip地址的修改功能
+            SocketClientHelper helper = new SocketClientHelper("192.168.1.1", 9527);
+            ret = helper.Send(json);
+
+            MessageBox.Show(ret);
+
             return true;
         }
     }
