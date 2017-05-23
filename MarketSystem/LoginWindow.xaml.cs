@@ -26,6 +26,10 @@ namespace MarketSystem.Properties
             string username = textboxUsername.Text;
             string password = textboxPassword.Text;
 
+            // 获取ip地址及端口
+            string ip = tbIPAddress.Text;
+            string port = tbPort.Text;
+
             // 验证权限
             bool result = checkAuth(ref username, ref password);
 

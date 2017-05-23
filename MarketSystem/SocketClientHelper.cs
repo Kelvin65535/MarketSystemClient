@@ -52,7 +52,7 @@ namespace MarketSystem
             {
                 Console.WriteLine("连接服务器发生错误：\n" + ex.Message);
             }
-            string receive = null;
+            string receive = "";
             //发送数据
             try
             {
@@ -61,7 +61,10 @@ namespace MarketSystem
                 sw = new StreamWriter(ns);
                 sw.WriteLine(data);
                 sw.Flush();
-                receive = sr.ReadLine();
+                do
+                {
+                    receive = sr.ReadLine();
+                } while (receive != "");
             }
             catch (Exception ex)
             {
