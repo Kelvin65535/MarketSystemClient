@@ -10,6 +10,9 @@ namespace MarketSystem.Properties
     /// </summary>
     public partial class LoginWindow : Window
     {
+
+        SocketClientHelper helper;
+
         public LoginWindow()
         {
             InitializeComponent();
@@ -31,15 +34,8 @@ namespace MarketSystem.Properties
             string port = tbPort.Text;
 
             // 验证权限
-            bool result = checkAuth(ref username, ref password);
-
-            if (result)
-            {
-                //验证成功，导航到MainWindow
-                MainWindow mw = new MainWindow();
-                mw.Show();
-                this.Close();
-            }
+            checkAuth(ref username, ref password, ref ip, ref port);
+            
         }
 
         /// <summary>
@@ -48,7 +44,7 @@ namespace MarketSystem.Properties
         /// <param name="username_input"></param>
         /// <param name="password_input"></param>
         /// <returns></returns>
-        private bool checkAuth(ref string username_input, ref string password_input)
+        private void checkAuth(ref string username_input, ref string password_input, ref string ip, ref string port)
         {
             // TODO 增加验证处理部分
 
@@ -63,16 +59,50 @@ namespace MarketSystem.Properties
             obj.Add("quest", "login");
             obj.Add("userid", "");
             string json = JsonConvert.SerializeObject(obj);
-            string ret = "";
 
             //发送数据
             //TODO 增加ip地址的修改功能
-            SocketClientHelper helper = new SocketClientHelper("192.168.1.1", 9527);
-            ret = helper.Send(json);
-
-            MessageBox.Show(ret);
-
-            return true;
+            int portnum = Convert.ToInt32(port);
+            helper = new SocketClientHelper(ip, portnum);
+            helper.MessageArrived += DisplayServerReturnMessage;
+            helper.Connect();
+            helper.Send(json);
         }
+
+        /// <summary>
+        /// 用于处理服务端返回的json字符串并分析返回结果
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DisplayServerReturnMessage(object sender, ServerMessageArrivedEventArgs e)
+        {
+            string ret = e.Message;
+            var obj = JsonConvert.DeserializeAnonymousType(ret, new { id = 0, status = String.Empty , result = String.Empty, userid = 0});
+            if (obj == null)
+            {
+                MessageBox.Show("权限验证失败，请检查输入是否正确", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            Console.WriteLine(string.Format("id:{0} status:{1} result={2} userid={3}", obj.id, obj.status, obj.result, obj.userid));
+            helper.Disconnect();
+
+            //分析返回结果
+            if (obj.status == "OK")
+            {
+                Console.WriteLine("权限验证成功");
+                //全局存储userid键值
+                Application.Current.Properties["userid"] = obj.userid; //保存用户用于查询的userid
+                //验证成功，导航到MainWindow
+                MainWindow mw = new MainWindow();
+                mw.Show();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("权限验证失败，请检查输入是否正确", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+        }
+        
     }
 }

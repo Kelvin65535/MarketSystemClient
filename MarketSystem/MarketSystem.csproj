@@ -60,6 +60,7 @@
     <Compile Include="PageSuspendOrder.xaml.cs">
       <DependentUpon>PageSuspendOrder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ServerMessageArrivedEventArgs.cs" />
     <Compile Include="ShopItem.cs" />
     <Compile Include="SocketClientHelper.cs" />
     <Compile Include="WindowConfirmOrder.xaml.cs">

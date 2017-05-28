@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
+using System.Windows;
 
 namespace MarketSystem
 {
@@ -23,6 +25,10 @@ namespace MarketSystem
         public StreamReader sr;     //流读取
         public StreamWriter sw;     //流写入
 
+        public event EventHandler<ServerMessageArrivedEventArgs> MessageArrived;
+        public string Name { get; set; }
+        public Timer pollTimer;
+
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -32,14 +38,11 @@ namespace MarketSystem
         {
             this.ipAddressString = ipAddress;
             this.port = port;
+            pollTimer = new Timer(100);
+            pollTimer.Elapsed += new ElapsedEventHandler(CheckServerReturnMessage);
         }
 
-        /// <summary>
-        /// 向服务器发送数据
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public string Send(string data)
+        public void Connect()
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ip = IPAddress.Parse(ipAddressString);
@@ -47,33 +50,57 @@ namespace MarketSystem
             try
             {
                 socket.Connect(ip, port);
+                ns = new NetworkStream(socket);
+                sr = new StreamReader(ns);
+                sw = new StreamWriter(ns);
+                pollTimer.Start();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("连接服务器发生错误：\n" + ex.Message);
+                MessageBox.Show("连接服务器发生错误", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        /// <summary>
+        /// 向服务器发送数据
+        /// </summary>
+        /// <param name="data"></param>
+        public void Send(string data)
+        {
             string receive = "";
             //发送数据
             try
             {
-                ns = new NetworkStream(socket);
-                sr = new StreamReader(ns);
-                sw = new StreamWriter(ns);
                 sw.WriteLine(data);
                 sw.Flush();
-                do
-                {
-                    receive = sr.ReadLine();
-                } while (receive != "");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("连接服务器发生错误：\n" + ex.Message);
-                
             }
 
-            return receive;
         }
         
+        public void Disconnect()
+        {
+            pollTimer.Stop();
+            pollTimer.Dispose();
+            sw.Close();
+            sr.Close();
+            socket.Close();
+            
+        }
+
+        private void CheckServerReturnMessage(object source, EventArgs e)
+        {
+            Console.WriteLine("正在向服务端接受信息...");
+            string ret = "";
+            while (sr != null && ret == "")
+            {
+                ret = sr.ReadLine();
+            };
+            MessageArrived(this, new ServerMessageArrivedEventArgs(ret));
+        }
     }
 }

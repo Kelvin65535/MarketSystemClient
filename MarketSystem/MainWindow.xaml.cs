@@ -252,6 +252,10 @@ namespace MarketSystem
                 case Key.Right:
                     商品数量改变("add");
                     break;
+                //空格按钮，确认订单
+                case Key.Space:
+                    confirmOrder();
+                    break;
                 default:
                     break;
             }
