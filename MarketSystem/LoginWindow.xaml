@@ -7,15 +7,16 @@
         mc:Ignorable="d"
         Title="用户登录" Height="300" Width="300">
     <Grid>
-        <Label x:Name="labelUsername" Content="用户名：" HorizontalAlignment="Left" Margin="52,83,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="labelPassword" Content="密码：" HorizontalAlignment="Left" Margin="52,128,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textboxUsername" HorizontalAlignment="Left" Height="23" Margin="123,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="textboxPassword" HorizontalAlignment="Left" Height="23" Margin="123,128,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btnLogin" Content="登录" HorizontalAlignment="Left" Margin="110,226,0,0" VerticalAlignment="Top" Width="75" Click="btnLogin_Click"/>
-        <Label Content="IP地址：" HorizontalAlignment="Left" Margin="23,165,0,0" VerticalAlignment="Top"/>
-        <Label Content="端口：" HorizontalAlignment="Left" Margin="165,165,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="tbIPAddress" HorizontalAlignment="Left" Height="23" Margin="23,190,0,0" TextWrapping="Wrap" Text="192.168.1.1" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="tbPort" HorizontalAlignment="Left" Height="23" Margin="165,190,0,0" TextWrapping="Wrap" Text="9527" VerticalAlignment="Top" Width="78"/>
+        <Label x:Name="labelUsername" Content="用户名：" HorizontalAlignment="Left" Margin="30,83,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="labelPassword" Content="密码：" HorizontalAlignment="Left" Margin="30,128,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textboxUsername" Height="23" Margin="95,85,30,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <PasswordBox x:Name="textboxPassword" Height="23" Margin="95,128,30,0"  VerticalAlignment="Top"/>
+        <Button x:Name="btnLogin" Content="登录" Margin="110,226,0,0" VerticalAlignment="Top" Width="75" Click="btnLogin_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+        <Label Content="IP地址：" HorizontalAlignment="Left" Margin="30,165,0,0" VerticalAlignment="Top"/>
+        <Label Content="端口：" HorizontalAlignment="Left" Margin="184,165,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="tbIPAddress" HorizontalAlignment="Left" Height="23" Margin="30,190,0,0" TextWrapping="Wrap" Text="192.168.1.1" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="tbPort" HorizontalAlignment="Left" Height="23" Margin="184,190,0,0" TextWrapping="Wrap" Text="9527" VerticalAlignment="Top" Width="78"/>
 
     </Grid>
+
 </Window>

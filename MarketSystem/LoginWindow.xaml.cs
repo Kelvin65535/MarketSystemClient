@@ -27,7 +27,7 @@ namespace MarketSystem.Properties
         {
             // 获取输入的用户名及密码
             string username = textboxUsername.Text;
-            string password = textboxPassword.Text;
+            string password = textboxPassword.Password;
 
             // 获取ip地址及端口
             string ip = tbIPAddress.Text;
