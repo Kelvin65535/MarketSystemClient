@@ -42,6 +42,30 @@ namespace MarketSystem
             pollTimer.Elapsed += new ElapsedEventHandler(CheckServerReturnMessage);
         }
 
+        /// <summary>
+        /// 无参构造方法，从全局变量中获取IP地址和服务器端口
+        /// </summary>
+        public SocketClientHelper()
+        {
+            this.ipAddressString = (string) Application.Current.Properties["ipAddress"];
+            this.port = (int) Application.Current.Properties["port"];
+            pollTimer = new Timer(100);
+            pollTimer.Elapsed += new ElapsedEventHandler(CheckServerReturnMessage);
+        }
+
+        /// <summary>
+        /// IP地址获取器
+        /// </summary>
+        public string IPAddressString
+        {
+            get => ipAddressString;
+        }
+
+        public int Port
+        {
+            get => port;
+        }
+
         public void Connect()
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

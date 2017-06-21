@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -15,6 +17,7 @@ namespace MarketSystem
     public partial class MainWindow : Window
     {
 
+
         //局部变量
         /// <summary>
         /// ListView数据源，存放商品item的集合
@@ -25,6 +28,11 @@ namespace MarketSystem
         /// 存放搁置订单的订单列表
         /// </summary>
         private ObservableCollection<ObservableCollection<ShopItem>> 搁置订单列表;
+
+        /// <summary>
+        /// Socket查询助手类
+        /// </summary>
+        SocketClientHelper helper;
 
         public MainWindow()
         {
@@ -81,15 +89,8 @@ namespace MarketSystem
                         return;
                     }
                 }
-                //为itemList添加新的商品item
-                //TODO 使用ajax获取商品信息
-                itemList.Add(new ShopItem(num, "测试商品", 1, 1.00, 5.00));
-
-                //调用委托，从后台将显示焦点移动到最后一个元素
-                focusItemInBackground((ShopItem)listviewShopItem.Items[listviewShopItem.Items.Count - 1]);
-                更新合计价格();
-                //清除输入
-                tb商品编号.Text = null;
+                //使用ajax获取对应商品num的详细信息，随后为itemList添加新的商品item
+                ajaxGetItemInfo(Convert.ToInt32(num));
             }
             
             
@@ -355,6 +356,67 @@ namespace MarketSystem
         {
             listviewShopItem.SelectedItem = item;
             listviewShopItem.ScrollIntoView(item);
+        }
+
+        /// <summary>
+        /// 使用异步方式发起商品详细信息查询
+        /// </summary>
+        /// <param name="itemNum"></param>
+        private void ajaxGetItemInfo(int itemNum)
+        {
+            //构造json查询字符串
+            int id = (int)Application.Current.Properties["id"];//查询ID
+            int userid = (int)Application.Current.Properties["userid"];//用户ID
+            JObject obj = new JObject();
+            obj.Add("id", id);
+            obj.Add("query", itemNum); //TODO 将商品ID放到查询字符串中
+            obj.Add("quest", "query");
+            obj.Add("userid", userid);
+            string json = JsonConvert.SerializeObject(obj);//序列化
+
+            //发送数据
+            helper = new SocketClientHelper();
+            //设置消息响应的回调事件
+            helper.MessageArrived += DisplayServerReturnMessage;
+            helper.Connect();
+            helper.Send(json);
+        }
+
+        /// <summary>
+        /// 用于处理服务端返回的json字符串并分析返回结果
+        /// TODO 未经测试
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DisplayServerReturnMessage(object sender, ServerMessageArrivedEventArgs e)
+        {
+            string ret = e.Message;
+            var obj = JsonConvert.DeserializeAnonymousType(ret, new { id = 0, status = String.Empty, result = String.Empty, userid = 0 });
+            var result = JsonConvert.DeserializeAnonymousType(obj.result, new { itemNum = String.Empty, itemName = String.Empty, itemOriginalPrice = 0, itemSellPrice = 0 });
+            if (obj == null)
+            {
+                MessageBox.Show("服务器连接错误，清稍后再试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            Console.WriteLine(string.Format("id:{0} status:{1} result={2} userid={3}", obj.id, obj.status, obj.result, obj.userid));
+            helper.Disconnect();
+
+            //分析返回结果
+            if (obj.status == "OK")
+            {
+                itemList.Add(new ShopItem(result.itemNum, result.itemName, 1, result.itemOriginalPrice, result.itemSellPrice));
+
+                //调用委托，从后台将显示焦点移动到最后一个元素
+                focusItemInBackground((ShopItem)listviewShopItem.Items[listviewShopItem.Items.Count - 1]);
+                更新合计价格();
+                //清除输入
+                tb商品编号.Text = null;
+            }
+            else
+            {
+                MessageBox.Show("服务器连接错误，清稍后再试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
         }
 
         /// <summary>

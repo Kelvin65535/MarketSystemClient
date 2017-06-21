@@ -92,6 +92,9 @@ namespace MarketSystem.Properties
                 Console.WriteLine("权限验证成功");
                 //全局存储userid键值
                 Application.Current.Properties["userid"] = obj.userid; //保存用户用于查询的userid
+                //全局存储服务器IP地址和端口
+                Application.Current.Properties["ipAddress"] = helper.IPAddressString; //保存IP地址
+                Application.Current.Properties["port"] = helper.Port; //保存端口
                 //验证成功，导航到MainWindow
                 MainWindow mw = new MainWindow();
                 mw.Show();
