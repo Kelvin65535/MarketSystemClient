@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,6 +34,9 @@ namespace MarketSystem
         /// Socket查询助手类
         /// </summary>
         SocketClientHelper helper;
+
+        bool canAddItem = false;
+        ShopItem tempShopItem = null;
 
         public MainWindow()
         {
@@ -91,6 +95,29 @@ namespace MarketSystem
                 }
                 //使用ajax获取对应商品num的详细信息，随后为itemList添加新的商品item
                 ajaxGetItemInfo(Convert.ToInt32(num));
+
+                int count = 5;
+                for (int i = 0; i < count; i++)
+                {
+                    if (canAddItem)
+                    {
+                        itemList.Add(tempShopItem);
+
+                        //调用委托，从后台将显示焦点移动到最后一个元素
+                        focusItemInBackground((ShopItem)listviewShopItem.Items[listviewShopItem.Items.Count - 1]);
+                        更新合计价格();
+                        //清除输入
+                        tb商品编号.Text = null;
+                        //清除临时变量
+                        tempShopItem = null;
+                        canAddItem = false;
+                        break;
+                    }
+
+                    Thread.Sleep(1000);
+                }
+
+                MessageBox.Show("查询商品信息失败，请重试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 //TODO 测试数据
                 //var shopitem = new ShopItem("123", "123", 1, 20, 15);
@@ -400,26 +427,22 @@ namespace MarketSystem
         private void DisplayServerReturnMessage(object sender, ServerMessageArrivedEventArgs e)
         {
             string ret = e.Message;
-            var obj = JsonConvert.DeserializeAnonymousType(ret, new { id = 0, status = String.Empty, result = String.Empty, userid = 0 });
-            var result = JsonConvert.DeserializeAnonymousType(obj.result, new { itemNum = String.Empty, itemName = String.Empty, itemOriginalPrice = 0, itemSellPrice = 0 });
+            var obj = JsonConvert.DeserializeObject<ResultFromServer>(ret);
+            var result = obj.result;
             if (obj == null)
             {
                 MessageBox.Show("服务器连接错误，清稍后再试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            Console.WriteLine(string.Format("id:{0} status:{1} result={2} userid={3}", obj.id, obj.status, obj.result, obj.userid));
+            Console.WriteLine(string.Format("id:{0} status:{1} result={2}", obj.id, obj.status, obj.result));
             helper.Disconnect();
 
             //分析返回结果
             if (obj.status == "OK")
             {
-                itemList.Add(new ShopItem(result.itemNum, result.itemName, 1, result.itemOriginalPrice, result.itemSellPrice));
-
-                //调用委托，从后台将显示焦点移动到最后一个元素
-                focusItemInBackground((ShopItem)listviewShopItem.Items[listviewShopItem.Items.Count - 1]);
-                更新合计价格();
-                //清除输入
-                tb商品编号.Text = null;
+                tempShopItem = new ShopItem(result.itemNum, result.itemName, 1, result.itemOriginalPrice, result.itemSellPrice);
+                canAddItem = true;
+                
             }
             else
             {

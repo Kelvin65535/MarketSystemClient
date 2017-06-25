@@ -59,4 +59,46 @@ namespace MarketSystem
             this.itemSellPrice = itemSellPrice;
         }
     }
+    
+    /// <summary>
+    /// 用于封装从服务器返回的查询结果json字符串反序列化的容器
+    /// </summary>
+    public class ResultFromServer
+    {
+        /// <summary>
+        /// 查询id
+        /// </summary>
+        public int id { get; set; }
+        /// <summary>
+        /// 服务器返回查询状态（成功为"OK"）
+        /// </summary>
+        public string status { get; set; }
+        /// <summary>
+        /// 商品信息的封装
+        /// </summary>
+        public ShopItemFromServer result { get; set; }  
+    }
+
+    /// <summary>
+    /// 用于封装从服务器返回的商品信息json字符串反序列化的容器
+    /// </summary>
+    public class ShopItemFromServer
+    {
+        /// <summary>
+        /// 商品名称
+        /// </summary>
+        public string itemName { get; set; }
+        /// <summary>
+        /// 商品编号
+        /// </summary>
+        public string itemNum { get; set; }
+        /// <summary>
+        /// 商品原价
+        /// </summary>
+        public int itemOriginalPrice { get; set; }
+        /// <summary>
+        /// 商品当前售价
+        /// </summary>
+        public int itemSellPrice { get; set; }
+    }
 }

@@ -20,6 +20,12 @@ namespace MarketSystem.Properties
         }
 
         bool canLogin = false;
+        //MainWindow w = new MainWindow();
+        //Thread t = new Thread(() =>
+        //{
+        //    Application.Current.Dispatcher.Invoke(new Action(() => { w.Show(); this.Close(); }));
+        //});
+        
 
         /// <summary>
         /// “登录”按钮点击事件
@@ -35,11 +41,28 @@ namespace MarketSystem.Properties
             // 获取ip地址及端口
             string ip = tbIPAddress.Text;
             string port = tbPort.Text;
-
+            
             // 验证权限
             checkAuth(ref username, ref password, ref ip, ref port);
 
-           
+            // 查看验证结果
+            int count = 5;//倒计时
+            for (int i = 0; i < count; i++)
+            {
+                // 查询验证结果是否返回成功
+                if (canLogin)
+                {
+                    MainWindow mw = new MainWindow();
+                    mw.Show();
+                    this.Close();
+                    break;
+                }
+
+                Thread.Sleep(1000);//暂停1s
+            }
+
+            MessageBox.Show("验证用户权限失败，请重试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
         }
 
         /// <summary>
@@ -90,15 +113,6 @@ namespace MarketSystem.Properties
             Console.WriteLine(string.Format("id:{0} status:{1} result={2} userid={3}", obj.id, obj.status, obj.result, obj.userid));
             helper.Disconnect();
 
-            //验证成功，导航到MainWindow
-            MainWindow w = new MainWindow();
-            Thread t = new Thread(() =>
-            {
-                Application.Current.Dispatcher.Invoke(new Action(() => { w.Show(); }));
-            });
-            t.IsBackground = true;
-            t.Start();
-
             //分析返回结果
             if (obj.status == "OK")
             {
@@ -110,13 +124,9 @@ namespace MarketSystem.Properties
                 Application.Current.Properties["port"] = helper.Port; //保存端口
 
                 //验证成功，导航到MainWindow
-                MainWindow mw = new MainWindow();
-                Thread thread = new Thread(() =>
-                {
-                    Application.Current.Dispatcher.Invoke(new Action(() => { mw.Show(); }));
-                });
-                thread.IsBackground = true;
-                thread.Start();
+                //TODO
+                canLogin = true;
+                //t.Start();
             }
             else
             {
