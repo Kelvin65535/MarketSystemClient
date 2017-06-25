@@ -91,6 +91,15 @@ namespace MarketSystem
                 }
                 //使用ajax获取对应商品num的详细信息，随后为itemList添加新的商品item
                 ajaxGetItemInfo(Convert.ToInt32(num));
+
+                //TODO 测试数据
+                //var shopitem = new ShopItem("123", "123", 1, 20, 15);
+                //itemList.Add(shopitem);
+                ////调用委托，从后台将显示焦点移动到最后一个元素
+                //focusItemInBackground((ShopItem)listviewShopItem.Items[listviewShopItem.Items.Count - 1]);
+                //更新合计价格();
+                ////清除输入
+                //tb商品编号.Text = null;
             }
             
             

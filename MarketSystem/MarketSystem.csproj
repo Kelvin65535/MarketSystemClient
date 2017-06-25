@@ -57,6 +57,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IDocumentRenderer.cs" />
+    <Compile Include="OrderData.cs" />
+    <Compile Include="OrderDocumentRenderer.cs" />
     <Compile Include="PageSuspendOrder.xaml.cs">
       <DependentUpon>PageSuspendOrder.xaml</DependentUpon>
     </Compile>
@@ -65,6 +68,9 @@
     <Compile Include="SocketClientHelper.cs" />
     <Compile Include="WindowConfirmOrder.xaml.cs">
       <DependentUpon>WindowConfirmOrder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowPrintPreview.xaml.cs">
+      <DependentUpon>WindowPrintPreview.xaml</DependentUpon>
     </Compile>
     <Page Include="FlowDocumentOrderReceipt.xaml">
       <SubType>Designer</SubType>
@@ -91,6 +97,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowConfirmOrder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowPrintPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

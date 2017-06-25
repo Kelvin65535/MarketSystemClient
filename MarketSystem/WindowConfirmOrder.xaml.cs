@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace MarketSystem
 {
@@ -82,6 +83,10 @@ namespace MarketSystem
                 //当检测到回车输入时确认订单
                 case Key.Enter:
                     显示实收价格();
+                    if (找零价格 < 0)
+                    {
+                        return;
+                    }
                     打印订单();
                     e.Handled = true;
                     break;
@@ -98,9 +103,30 @@ namespace MarketSystem
             }
         }
 
+        private delegate void DoPrintMethod(PrintDialog pdlg, DocumentPaginator paginator);
+        private void DoPrint(PrintDialog pdlg, DocumentPaginator paginator)
+        {
+            pdlg.PrintDocument(paginator, "Order Document");
+        }
         private void 打印订单()
         {
-            //TODO
+            //构建OrderData对象
+            OrderData data = new OrderData();
+            data.Total = 总价.ToString("C");
+            data.Accept = 实收价格.ToString("C");
+            data.Refund = 找零价格.ToString("C");
+            data.itemList = itemList;
+            data.date = DateTime.Now.ToLongDateString();
+            PrintDialog pdlg = new PrintDialog();
+            if (pdlg.ShowDialog() == true)
+            {
+                FlowDocument doc = WindowPrintPreview.LoadDocumentAndRender("FlowDocumentOrderReceipt.xaml", data, new OrderDocumentRenderer());
+                Dispatcher.BeginInvoke(new DoPrintMethod(DoPrint), DispatcherPriority.ApplicationIdle, pdlg, ((IDocumentPaginatorSource)doc).DocumentPaginator);
+            }
+
+            //打印完成后的操作
+            tb实收金额.Text = "";
+            return;
         }
 
         /// <summary>
@@ -109,8 +135,13 @@ namespace MarketSystem
         private void 显示实收价格()
         {
             实收价格 = Convert.ToDouble(tb实收金额.Text);
-            label实收价格.Content = 实收价格.ToString("C");
             找零价格 = 实收价格 - 总价;
+            if (找零价格 < 0)
+            {
+                tb实收金额.Text = "";
+                return;
+            }
+            label实收价格.Content = 实收价格.ToString("C");
             label退还价格.Content = 找零价格.ToString("C");
         }
     }

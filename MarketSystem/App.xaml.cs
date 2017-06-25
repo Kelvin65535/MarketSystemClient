@@ -25,6 +25,7 @@ namespace MarketSystem
 
             // 启动登录窗口
             LoginWindow wd = new LoginWindow();
+            //MainWindow wd = new MainWindow();
             wd.Show();
         }
     }
