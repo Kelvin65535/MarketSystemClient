@@ -379,7 +379,7 @@ namespace MarketSystem
             JObject obj = new JObject();
             obj.Add("id", id);
             obj.Add("query", itemNum); //TODO 将商品ID放到查询字符串中
-            obj.Add("quest", "query");
+            obj.Add("quest", "queryByID");
             obj.Add("userid", userid);
             string json = JsonConvert.SerializeObject(obj);//序列化
 
