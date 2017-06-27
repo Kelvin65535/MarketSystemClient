@@ -69,7 +69,17 @@ namespace MarketSystem
         public void Connect()
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            ip = IPAddress.Parse(ipAddressString);
+            try
+            {
+                ip = IPAddress.Parse(ipAddressString);
+            }
+            catch (Exception)
+            {
+
+                MessageBox.Show("IP地址格式错误，请检查输入", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            
             //开始连接
             try
             {
@@ -83,6 +93,7 @@ namespace MarketSystem
             {
                 Console.WriteLine("连接服务器发生错误：\n" + ex.Message);
                 MessageBox.Show("连接服务器发生错误", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                Disconnect();
             }
         }
 

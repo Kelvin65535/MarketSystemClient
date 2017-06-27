@@ -19,12 +19,10 @@ namespace MarketSystem.Properties
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 记录当前登陆状态是否验证成功，若登陆成功，将此项设为true
+        /// </summary>
         bool canLogin = false;
-        //MainWindow w = new MainWindow();
-        //Thread t = new Thread(() =>
-        //{
-        //    Application.Current.Dispatcher.Invoke(new Action(() => { w.Show(); this.Close(); }));
-        //});
         
 
         /// <summary>
@@ -46,7 +44,7 @@ namespace MarketSystem.Properties
             checkAuth(ref username, ref password, ref ip, ref port);
 
             // 查看验证结果
-            int count = 5;//倒计时
+            int count = 2;//倒计时
             for (int i = 0; i < count; i++)
             {
                 // 查询验证结果是否返回成功
@@ -55,13 +53,11 @@ namespace MarketSystem.Properties
                     MainWindow mw = new MainWindow();
                     mw.Show();
                     this.Close();
-                    break;
+                    return;
                 }
 
                 Thread.Sleep(1000);//暂停1s
             }
-
-            MessageBox.Show("验证用户权限失败，请重试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             return;
         }
 
@@ -89,7 +85,15 @@ namespace MarketSystem.Properties
 
             //发送数据
             //TODO 增加ip地址的修改功能
-            int portnum = Convert.ToInt32(port);
+            int portnum = 0;
+            try
+            {
+                portnum = Convert.ToInt32(port);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("端口格式错误，请检查输入", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             helper = new SocketClientHelper(ip, portnum);
             helper.MessageArrived += DisplayServerReturnMessage;
             helper.Connect();
@@ -114,7 +118,7 @@ namespace MarketSystem.Properties
             helper.Disconnect();
 
             //分析返回结果
-            if (obj.status == "OK")
+            if (obj.result == "YES" && obj.status == "OK")
             {
                 Console.WriteLine("权限验证成功");
                 //全局存储userid键值
@@ -124,13 +128,14 @@ namespace MarketSystem.Properties
                 Application.Current.Properties["port"] = helper.Port; //保存端口
 
                 //验证成功，导航到MainWindow
-                //TODO
                 canLogin = true;
-                //t.Start();
+                helper.Disconnect();
+                return;
             }
             else
             {
                 MessageBox.Show("权限验证失败，请检查输入是否正确", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                helper.Disconnect();
                 return;
             }
         }

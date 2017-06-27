@@ -78,6 +78,11 @@ namespace MarketSystem
                 {
                     return;
                 }
+                if (num.Length > 9)
+                {
+                    tb商品编号.Text = "";
+                    return;
+                }
                 //判断商品是否存在list中，若存在则数量+1
                 foreach (var item in itemList)
                 {
@@ -96,7 +101,7 @@ namespace MarketSystem
                 //使用ajax获取对应商品num的详细信息，随后为itemList添加新的商品item
                 ajaxGetItemInfo(Convert.ToInt32(num));
 
-                int count = 5;
+                int count = 2; //设定发起ajax请求多少秒内判断是否正确接收服务端返回数据
                 for (int i = 0; i < count; i++)
                 {
                     if (canAddItem)
@@ -111,7 +116,7 @@ namespace MarketSystem
                         //清除临时变量
                         tempShopItem = null;
                         canAddItem = false;
-                        break;
+                        return;
                     }
 
                     Thread.Sleep(1000);
@@ -119,14 +124,11 @@ namespace MarketSystem
 
                 MessageBox.Show("查询商品信息失败，请重试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                //TODO 测试数据
-                //var shopitem = new ShopItem("123", "123", 1, 20, 15);
-                //itemList.Add(shopitem);
-                ////调用委托，从后台将显示焦点移动到最后一个元素
-                //focusItemInBackground((ShopItem)listviewShopItem.Items[listviewShopItem.Items.Count - 1]);
-                //更新合计价格();
-                ////清除输入
-                //tb商品编号.Text = null;
+                //清除输入
+                tb商品编号.Text = null;
+                //清除临时变量
+                tempShopItem = null;
+                canAddItem = false;
             }
             
             
@@ -427,14 +429,14 @@ namespace MarketSystem
         private void DisplayServerReturnMessage(object sender, ServerMessageArrivedEventArgs e)
         {
             string ret = e.Message;
-            var obj = JsonConvert.DeserializeObject<ResultFromServer>(ret);
-            var result = obj.result;
-            if (obj == null)
+            if (ret.Contains("null"))
             {
-                MessageBox.Show("服务器连接错误，清稍后再试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            Console.WriteLine(string.Format("id:{0} status:{1} result={2}", obj.id, obj.status, obj.result));
+            var obj = JsonConvert.DeserializeObject<ResultFromServer>(ret);
+
+            var result = obj.result;
+            
             helper.Disconnect();
 
             //分析返回结果
@@ -442,7 +444,7 @@ namespace MarketSystem
             {
                 tempShopItem = new ShopItem(result.itemNum, result.itemName, 1, result.itemOriginalPrice, result.itemSellPrice);
                 canAddItem = true;
-                
+                return;
             }
             else
             {
