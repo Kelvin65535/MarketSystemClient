@@ -54,6 +54,7 @@
                     <Label x:Name="label商品折后价" Content="{Binding ItemSellPrice}" FontSize="16"/>
                 </StackPanel>
             </WrapPanel>
+            <Label Content="操作说明：&#xD;&#xA;数字键：输入商品编号信息&#xD;&#xA;Enter：录入当前商品&#xD;&#xA;空格：结算订单&#xD;&#xA;s：搁置当前订单&#xD;&#xA;r：恢复上次搁置订单&#xD;&#xA;c：清除所有信息&#xD;&#xA;方向键上/下：选定商品&#xD;&#xA;方向键左/右：增加/减少商品数量&#xD;&#xA;" Grid.Column="2" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="192" Height="131"/>
         </Grid>
     </Viewbox>
 
