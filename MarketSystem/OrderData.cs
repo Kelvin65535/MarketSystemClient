@@ -14,4 +14,13 @@ namespace MarketSystem
         public string Refund { get; set; }
         public string date { get; set; }
     }
+
+    class OrderData_log
+    {
+        public List<ShopItem> itemList;
+        public string Total { get; set; }
+        public string Accept { get; set; }
+        public string Refund { get; set; }
+        public string date { get; set; }
+    }
 }

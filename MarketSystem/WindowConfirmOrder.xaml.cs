@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -126,7 +127,24 @@ namespace MarketSystem
 
             //打印完成后的操作
             tb实收金额.Text = "";
+
+            记录订单到Log文件();
             return;
+        }
+
+        /// <summary>
+        /// 将当前订单信息转换成json格式后记录到log文件中
+        /// </summary>
+        private void 记录订单到Log文件()
+        {
+            List<ShopItem> l = new List<ShopItem>(itemList);
+            OrderData_log log_data = new OrderData_log();
+            log_data.itemList = l;
+            log_data.Total = 总价.ToString("C");
+            log_data.Accept = 实收价格.ToString("C");
+            log_data.Refund = 找零价格.ToString("C");
+            var json = JsonConvert.SerializeObject(log_data);
+            LogHelper.WriteLog(ref json);
         }
 
         /// <summary>
