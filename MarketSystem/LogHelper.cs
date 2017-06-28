@@ -19,7 +19,7 @@ namespace MarketSystem
         public static void WriteLog(ref string content)
         {
             //打开文件
-            FileStream fs = new FileStream("log.txt", FileMode.Create);
+            FileStream fs = new FileStream("log.txt", FileMode.Append);
             //获得字节流
             byte[] data = System.Text.Encoding.Default.GetBytes(content);
             //开始写入

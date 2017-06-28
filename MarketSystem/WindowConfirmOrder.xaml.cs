@@ -145,6 +145,7 @@ namespace MarketSystem
             //log_data.Refund = 找零价格.ToString("C");
             //var json = JsonConvert.SerializeObject(log_data);
             string s = string.Format("{0:F}", 总价);
+            s = s + "\r\n";
             LogHelper.WriteLog(ref s);
         }
 
