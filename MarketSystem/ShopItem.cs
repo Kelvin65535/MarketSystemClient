@@ -95,10 +95,10 @@ namespace MarketSystem
         /// <summary>
         /// 商品原价
         /// </summary>
-        public int itemOriginalPrice { get; set; }
+        public double itemOriginalPrice { get; set; }
         /// <summary>
         /// 商品当前售价
         /// </summary>
-        public int itemSellPrice { get; set; }
+        public double itemSellPrice { get; set; }
     }
 }

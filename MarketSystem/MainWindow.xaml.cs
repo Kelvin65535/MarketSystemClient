@@ -101,7 +101,7 @@ namespace MarketSystem
                 //使用ajax获取对应商品num的详细信息，随后为itemList添加新的商品item
                 ajaxGetItemInfo(Convert.ToInt32(num));
 
-                int count = 4; //设定发起ajax请求多少秒内判断是否正确接收服务端返回数据
+                int count = 30; //设定发起ajax请求多少个0.1s内判断是否正确接收服务端返回数据
                 for (int i = 0; i < count; i++)
                 {
                     if (canAddItem)
@@ -119,7 +119,7 @@ namespace MarketSystem
                         return;
                     }
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                 }
 
                 MessageBox.Show("查询商品信息失败，请重试", "错误", MessageBoxButton.OK, MessageBoxImage.Error);

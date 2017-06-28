@@ -137,14 +137,15 @@ namespace MarketSystem
         /// </summary>
         private void 记录订单到Log文件()
         {
-            List<ShopItem> l = new List<ShopItem>(itemList);
-            OrderData_log log_data = new OrderData_log();
-            log_data.itemList = l;
-            log_data.Total = 总价.ToString("C");
-            log_data.Accept = 实收价格.ToString("C");
-            log_data.Refund = 找零价格.ToString("C");
-            var json = JsonConvert.SerializeObject(log_data);
-            LogHelper.WriteLog(ref json);
+            //List<ShopItem> l = new List<ShopItem>(itemList);
+            //OrderData_log log_data = new OrderData_log();
+            //log_data.itemList = l;
+            //log_data.Total = 总价.ToString("C");
+            //log_data.Accept = 实收价格.ToString("C");
+            //log_data.Refund = 找零价格.ToString("C");
+            //var json = JsonConvert.SerializeObject(log_data);
+            string s = string.Format("{0:F}", 总价);
+            LogHelper.WriteLog(ref s);
         }
 
         /// <summary>

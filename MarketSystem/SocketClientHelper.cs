@@ -133,7 +133,14 @@ namespace MarketSystem
             string ret = "";
             while (sr != null && ret == "")
             {
-                ret = sr.ReadLine();
+                try
+                {
+                    ret = sr.ReadLine();
+                }
+                catch (Exception)
+                {
+
+                }
             };
             MessageArrived(this, new ServerMessageArrivedEventArgs(ret));
         }
